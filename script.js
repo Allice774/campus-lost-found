@@ -3,139 +3,79 @@ import { db } from "./firebase.js";
 import {
     collection,
     getDocs,
-    addDoc
+    addDoc,
+    doc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
+const itemsContainer = document.getElementById("itemsContainer");
+const searchInput = document.getElementById("searchInput");
+const typeFilter = document.getElementById("typeFilter");
+const categoryFilter = document.getElementById("categoryFilter");
+const statusFilter = document.getElementById("statusFilter");
+const notificationArea = document.getElementById("notificationArea");
 
-// ===============================
-// ELEMENTS
-// ===============================
-
-const itemsContainer =
-    document.getElementById("itemsContainer");
-
-const notificationArea =
-    document.getElementById("notificationArea");
-
-const searchInput =
-    document.getElementById("searchInput");
-
-const typeFilter =
-    document.getElementById("typeFilter");
-
-const categoryFilter =
-    document.getElementById("categoryFilter");
-
-const statusFilter =
-    document.getElementById("statusFilter");
-
-const reportForm =
-    document.getElementById("reportForm");
-
-const itemType =
-    document.getElementById("itemType");
-
-const itemName =
-    document.getElementById("itemName");
-
-const itemCategory =
-    document.getElementById("itemCategory");
-
-const itemDescription =
-    document.getElementById("itemDescription");
-
-const itemLocation =
-    document.getElementById("itemLocation");
-
-const itemDate =
-    document.getElementById("itemDate");
-
-const itemPhoto =
-    document.getElementById("itemPhoto");
-
-const itemContact =
-    document.getElementById("itemContact");
-
-
-// ===============================
-// STORE ALL ITEMS
-// ===============================
+const reportForm = document.getElementById("reportForm");
 
 let allItems = [];
+let matches = [];
 
 
-// ===============================
-// GET VALUE
-// Handles different Firebase
-// field name capitalization
-// ===============================
-
+// Get value from Firestore even if field name has different capital letters
 function getValue(item, field) {
 
-    return item[field] ??
-           item[field.toLowerCase()] ??
-           "";
+    const lowerCaseField = field.toLowerCase();
 
+    const capitalizedField =
+        field.charAt(0).toUpperCase() +
+        field.slice(1).toLowerCase();
+
+    return (
+        item[field] ??
+        item[lowerCaseField] ??
+        item[capitalizedField] ??
+        ""
+    );
 }
 
 
-// ===============================
-// LOAD ITEMS FROM FIREBASE
-// ===============================
-
+// Load items from Firestore
 async function loadItems() {
 
     try {
 
-        const snapshot =
-            await getDocs(
-                collection(db, "items")
-            );
+        const querySnapshot = await getDocs(
+            collection(db, "items")
+        );
 
         allItems = [];
 
-        snapshot.forEach((doc) => {
+        querySnapshot.forEach((docSnapshot) => {
 
             allItems.push({
-
-                id: doc.id,
-
-                data: doc.data()
-
+                id: docSnapshot.id,
+                data: docSnapshot.data()
             });
 
         });
 
-
         displayItems(allItems);
-
         checkMatches();
 
-    }
+    } catch (error) {
 
-    catch (error) {
-
-        console.error(
-            "Error loading items:",
-            error
-        );
+        console.error("Error loading items:", error);
 
         itemsContainer.innerHTML =
-            "<p>Unable to load items. Please try again.</p>";
-
+            "<p>Unable to load items.</p>";
     }
-
 }
 
 
-// ===============================
-// DISPLAY ITEMS
-// ===============================
-
+// Display items on the website
 function displayItems(items) {
 
     itemsContainer.innerHTML = "";
-
 
     if (items.length === 0) {
 
@@ -143,127 +83,191 @@ function displayItems(items) {
             "<p>No items found.</p>";
 
         return;
-
     }
 
 
-    items.forEach((itemObject) => {
+    items.forEach((item) => {
 
-        const item =
-            itemObject.data;
+        const data = item.data;
 
-
-        const name =
-            getValue(item, "name");
-
-        const type =
-            getValue(item, "type");
-
-        const category =
-            getValue(item, "category");
-
-        const description =
-            getValue(item, "description");
-
-        const location =
-            getValue(item, "Location");
-
-        const date =
-            getValue(item, "Date");
-
-        const status =
-            getValue(item, "Status");
+        const type = getValue(data, "type");
+        const name = getValue(data, "name");
+        const category = getValue(data, "category");
+        const description = getValue(data, "description");
+        const location = getValue(data, "location");
+        const date = getValue(data, "date");
+        const status = getValue(data, "status");
+        const contact = getValue(data, "contact");
 
 
-        // ===============================
-        // FIND IMAGE
-        // ===============================
-
-        const searchText = (
-
-            name + " " +
-            description + " " +
-            location + " " +
-            category
-
-        ).toLowerCase();
-
-
-        let image = "";
+        let imagePath = "";
 
 
         if (
-            searchText.includes("water bottle") ||
-            searchText.includes("bottle")
+            name.toLowerCase().includes("bottle")
         ) {
+            imagePath = "assets/bottle.jpg";
 
-            image =
-                "assets/bottle.jpg";
-
-        }
-
-        else if (
-            searchText.includes("laptop") ||
-            searchText.includes("hp")
+        } else if (
+            name.toLowerCase().includes("laptop") ||
+            name.toLowerCase().includes("hp")
         ) {
+            imagePath = "assets/laptop.jpg";
 
-            image =
-                "assets/laptop.jpg";
-
-        }
-
-        else if (
-            searchText.includes("backpack") ||
-            searchText.includes("bag")
+        } else if (
+            name.toLowerCase().includes("backpack") ||
+            name.toLowerCase().includes("bag")
         ) {
+            imagePath = "assets/backpack.jpg";
 
-            image =
-                "assets/backpack.jpg";
-
-        }
-
-        else if (
-            searchText.includes("pen")
+        } else if (
+            name.toLowerCase().includes("pen")
         ) {
-
-            image =
-                "assets/pen.jpg";
-
+            imagePath = "assets/pen.jpg";
         }
 
 
-        // ===============================
-        // CREATE CARD
-        // ===============================
+        const card = document.createElement("div");
 
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "item-card";
+        card.className = "item-card";
 
 
         card.innerHTML = `
 
-            <img
-                src="${image}"
-                alt="${name}"
-                class="item-image"
-                title="Click to view image"
-            >
+            <div class="item-image">
 
-            <h3>${name}</h3>
+                ${
+                    imagePath
+                    ? `<img src="${imagePath}"
+                         alt="${name}"
+                         class="item-photo">`
+                    : `<div class="no-image">
+                         No Image
+                       </div>`
+                }
 
-            <p>${description}</p>
+            </div>
+
+
+            <div class="item-content">
+
+                <span class="item-type">
+                    ${type}
+                </span>
+
+                <h3>${name}</h3>
+
+                <p>
+                    <strong>Category:</strong>
+                    ${category}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    ${description}
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+                    ${location}
+                </p>
+
+                <p>
+                    <strong>Date:</strong>
+                    ${date || "Not provided"}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${status}
+                </p>
+
+                <button class="view-btn">
+                    View Details
+                </button>
+
+            </div>
+        `;
+
+
+        const image =
+            card.querySelector(".item-photo");
+
+        if (image) {
+
+            image.addEventListener("click", () => {
+
+                window.open(
+                    image.src,
+                    "_blank"
+                );
+
+            });
+
+        }
+
+
+        const viewButton =
+            card.querySelector(".view-btn");
+
+        viewButton.addEventListener(
+            "click",
+            () => {
+
+                showItemDetails(
+                    data,
+                    contact,
+                    imagePath
+                );
+
+            }
+        );
+
+
+        itemsContainer.appendChild(card);
+
+    });
+}
+
+
+// Show item details
+function showItemDetails(
+    data,
+    contact,
+    imagePath
+) {
+
+    const details =
+        document.getElementById("itemDetails");
+
+    const name =
+        getValue(data, "name");
+
+    const description =
+        getValue(data, "description");
+
+    const location =
+        getValue(data, "location");
+
+    const date =
+        getValue(data, "date");
+
+    details.innerHTML = `
+
+        <div class="details-box">
+
+            <h2>${name}</h2>
+
+            ${
+                imagePath
+                ? `<img src="${imagePath}"
+                     class="details-image">`
+                : ""
+            }
 
             <p>
-                <strong>Type:</strong>
-                ${type}
-            </p>
-
-            <p>
-                <strong>Category:</strong>
-                ${category}
+                <strong>Description:</strong>
+                ${description}
             </p>
 
             <p>
@@ -273,232 +277,93 @@ function displayItems(items) {
 
             <p>
                 <strong>Date:</strong>
-                ${date}
+                ${date || "Not provided"}
             </p>
 
             <p>
-                <strong>Status:</strong>
-                ${status}
+                <strong>Contact:</strong>
+                ${contact || "Not provided"}
             </p>
 
-            <button class="view-image-btn">
-                View Image
-            </button>
-
-        `;
-
-
-        // ===============================
-        // IMAGE BUTTON
-        // ===============================
-
-        const imageElement =
-            card.querySelector(
-                ".item-image"
-            );
-
-        const viewButton =
-            card.querySelector(
-                ".view-image-btn"
-            );
-
-
-        function openImage() {
-
-            if (image) {
-
-                const imageUrl =
-                    new URL(
-                        image,
-                        window.location.href
-                    ).href;
-
-                window.open(
-                    imageUrl,
-                    "_blank"
-                );
-
-            }
-
-            else {
-
-                alert(
-                    "Image not found for this item."
-                );
-
-            }
-
-        }
-
-
-        imageElement.addEventListener(
-            "click",
-            openImage
-        );
-
-        viewButton.addEventListener(
-            "click",
-            openImage
-        );
-
-
-        itemsContainer.appendChild(
-            card
-        );
-
-    });
-
+        </div>
+    `;
 }
-
-
-// ===============================
-// SEARCH + FILTER
-// ===============================
-
+// Search and filter
 function filterItems() {
 
-    const searchValue =
-        searchInput.value
-            .toLowerCase()
-            .trim();
-
+    const searchText =
+        searchInput.value.toLowerCase();
 
     const selectedType =
-        typeFilter.value
-            .toLowerCase();
-
+        typeFilter.value;
 
     const selectedCategory =
-        categoryFilter.value
-            .toLowerCase();
-
+        categoryFilter.value;
 
     const selectedStatus =
-        statusFilter.value
-            .toLowerCase();
+        statusFilter.value;
 
 
     const filteredItems =
-        allItems.filter(
-            (itemObject) => {
+        allItems.filter((item) => {
 
-                const item =
-                    itemObject.data;
+            const data = item.data;
 
+            const type =
+                getValue(data, "type").toLowerCase();
 
-                const name =
-                    getValue(
-                        item,
-                        "name"
-                    ).toLowerCase();
+            const name =
+                getValue(data, "name").toLowerCase();
 
+            const category =
+                getValue(data, "category").toLowerCase();
 
-                const type =
-                    getValue(
-                        item,
-                        "type"
-                    ).toLowerCase();
+            const description =
+                getValue(data, "description").toLowerCase();
 
+            const location =
+                getValue(data, "location").toLowerCase();
 
-                const category =
-                    getValue(
-                        item,
-                        "category"
-                    ).toLowerCase();
+            const status =
+                getValue(data, "status").toLowerCase();
 
 
-                const description =
-                    getValue(
-                        item,
-                        "description"
-                    ).toLowerCase();
+            const matchesSearch =
+                name.includes(searchText) ||
+                description.includes(searchText) ||
+                location.includes(searchText);
 
 
-                const location =
-                    getValue(
-                        item,
-                        "Location"
-                    ).toLowerCase();
+            const matchesType =
+                selectedType === "All" ||
+                type === selectedType.toLowerCase();
 
 
-                const status =
-                    getValue(
-                        item,
-                        "Status"
-                    ).toLowerCase();
+            const matchesCategory =
+                selectedCategory === "All" ||
+                category === selectedCategory.toLowerCase();
 
 
-                const matchesSearch =
-
-                    searchValue === "" ||
-
-                    name.includes(
-                        searchValue
-                    ) ||
-
-                    description.includes(
-                        searchValue
-                    ) ||
-
-                    location.includes(
-                        searchValue
-                    );
+            const matchesStatus =
+                selectedStatus === "All" ||
+                status === selectedStatus.toLowerCase();
 
 
-                const matchesType =
+            return (
+                matchesSearch &&
+                matchesType &&
+                matchesCategory &&
+                matchesStatus
+            );
 
-                    selectedType === "" ||
-
-                    selectedType === "all" ||
-
-                    type === selectedType;
-
-
-                const matchesCategory =
-
-                    selectedCategory === "" ||
-
-                    selectedCategory === "all" ||
-
-                    category === selectedCategory;
+        });
 
 
-                const matchesStatus =
-
-                    selectedStatus === "" ||
-
-                    selectedStatus === "all" ||
-
-                    status === selectedStatus;
-
-
-                return (
-
-                    matchesSearch &&
-
-                    matchesType &&
-
-                    matchesCategory &&
-
-                    matchesStatus
-
-                );
-
-            }
-        );
-
-
-    displayItems(
-        filteredItems
-    );
-
+    displayItems(filteredItems);
 }
 
 
-// ===============================
-// SEARCH/FILTER EVENTS
-// ===============================
-
+// Search and filter events
 searchInput.addEventListener(
     "input",
     filterItems
@@ -520,262 +385,169 @@ statusFilter.addEventListener(
 );
 
 
-// ===============================
-// POSSIBLE MATCH SYSTEM
-// ===============================
-
+// Check Lost and Found items for possible matches
 function checkMatches() {
 
-    // Find valid LOST items
+    matches = [];
 
     const lostItems =
-        allItems.filter(
-            (itemObject) => {
+        allItems.filter((item) => {
 
-                const item =
-                    itemObject.data;
+            const type =
+                getValue(
+                    item.data,
+                    "type"
+                ).toLowerCase();
 
+            const status =
+                getValue(
+                    item.data,
+                    "status"
+                ).toLowerCase();
 
-                const type =
-                    getValue(
-                        item,
-                        "type"
-                    ).toLowerCase().trim();
+            return (
+                type === "lost" &&
+                status !== "resolved"
+            );
 
+        });
 
-                const status =
-                    getValue(
-                        item,
-                        "Status"
-                    ).toLowerCase().trim();
-
-
-                const name =
-                    getValue(
-                        item,
-                        "name"
-                    ).trim();
-
-
-                return (
-
-                    type === "lost" &&
-
-                    status !== "resolved" &&
-
-                    name !== ""
-
-                );
-
-            }
-        );
-
-
-    // Find valid FOUND items
 
     const foundItems =
-        allItems.filter(
-            (itemObject) => {
+        allItems.filter((item) => {
 
-                const item =
-                    itemObject.data;
+            const type =
+                getValue(
+                    item.data,
+                    "type"
+                ).toLowerCase();
 
+            const status =
+                getValue(
+                    item.data,
+                    "status"
+                ).toLowerCase();
 
-                const type =
-                    getValue(
-                        item,
-                        "type"
-                    ).toLowerCase().trim();
+            return (
+                type === "found" &&
+                status !== "resolved"
+            );
 
-
-                const status =
-                    getValue(
-                        item,
-                        "Status"
-                    ).toLowerCase().trim();
-
-
-                const name =
-                    getValue(
-                        item,
-                        "name"
-                    ).trim();
+        });
 
 
-                return (
+    lostItems.forEach((lost) => {
 
-                    type === "found" &&
+        foundItems.forEach((found) => {
 
-                    status !== "resolved" &&
-
-                    name !== ""
-
-                );
-
-            }
-        );
-
-
-    const matches = [];
-
-
-    // Compare Lost with Found
-
-    lostItems.forEach(
-        (lostObject) => {
-
-            const lost =
-                lostObject.data;
+            const lostData = lost.data;
+            const foundData = found.data;
 
 
             const lostName =
                 getValue(
-                    lost,
+                    lostData,
                     "name"
-                ).toLowerCase().trim();
+                ).toLowerCase();
+
+            const foundName =
+                getValue(
+                    foundData,
+                    "name"
+                ).toLowerCase();
 
 
             const lostCategory =
                 getValue(
-                    lost,
+                    lostData,
                     "category"
-                ).toLowerCase().trim();
+                ).toLowerCase();
+
+            const foundCategory =
+                getValue(
+                    foundData,
+                    "category"
+                ).toLowerCase();
 
 
             const lostDescription =
                 getValue(
-                    lost,
+                    lostData,
                     "description"
-                ).toLowerCase().trim();
+                ).toLowerCase();
+
+            const foundDescription =
+                getValue(
+                    foundData,
+                    "description"
+                ).toLowerCase();
 
 
-            foundItems.forEach(
-                (foundObject) => {
-
-                    const found =
-                        foundObject.data;
+            let score = 0;
 
 
-                    const foundName =
-                        getValue(
-                            found,
-                            "name"
-                        ).toLowerCase().trim();
+            // Same category
+            if (
+                lostCategory &&
+                foundCategory &&
+                lostCategory === foundCategory
+            ) {
+                score += 1;
+            }
 
 
-                    const foundCategory =
-                        getValue(
-                            found,
-                            "category"
-                        ).toLowerCase().trim();
+            // Similar item name
+            if (
+                lostName &&
+                foundName &&
+                (
+                    lostName.includes(foundName) ||
+                    foundName.includes(lostName)
+                )
+            ) {
+                score += 2;
+            }
 
 
-                    const foundDescription =
-                        getValue(
-                            found,
-                            "description"
-                        ).toLowerCase().trim();
+            // Similar description
+            if (
+                lostDescription &&
+                foundDescription &&
+                (
+                    lostDescription.includes(foundDescription) ||
+                    foundDescription.includes(lostDescription)
+                )
+            ) {
+                score += 2;
+            }
 
 
-                    // Do not compare empty items
+            // Create match if score is high enough
+            if (score >= 2) {
 
-                    if (
-                        lostName === "" ||
-                        foundName === ""
-                    ) {
+                matches.push({
 
-                        return;
+                    lostId: lost.id,
+                    foundId: found.id,
 
-                    }
+                    lost: lostData,
+                    found: foundData
 
+                });
 
-                    let score = 0;
+            }
 
+        });
 
-                    // Same category
-
-                    if (
-                        lostCategory !== "" &&
-                        foundCategory !== "" &&
-                        lostCategory === foundCategory
-                    ) {
-
-                        score++;
-
-                    }
+    });
 
 
-                    // Similar name
-
-                    if (
-                        lostName.includes(
-                            foundName
-                        ) ||
-                        foundName.includes(
-                            lostName
-                        )
-                    ) {
-
-                        score += 2;
-
-                    }
-
-
-                    // Similar description
-
-                    if (
-                        lostDescription !== "" &&
-                        foundDescription !== "" &&
-                        (
-                            lostDescription.includes(
-                                foundDescription
-                            ) ||
-                            foundDescription.includes(
-                                lostDescription
-                            )
-                        )
-                    ) {
-
-                        score++;
-
-                    }
-
-
-                    // Possible match
-
-                    if (score >= 2) {
-
-                        matches.push({
-
-                            lost: lost,
-
-                            found: found
-
-                        });
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    displayNotifications(
-        matches
-    );
-
+    displayNotifications();
 }
 
 
-// ===============================
-// DISPLAY MATCH NOTIFICATIONS
-// ===============================
-
-function displayNotifications(
-    matches
-) {
+// Display possible match notifications
+function displayNotifications() {
 
     notificationArea.innerHTML = "";
 
@@ -783,118 +555,372 @@ function displayNotifications(
     if (matches.length === 0) {
 
         return;
-
     }
 
 
-    matches.forEach(
-        (match) => {
+    matches.forEach((match) => {
 
-            const lostName =
-                getValue(
-                    match.lost,
-                    "name"
-                ).trim();
-
-
-            const foundName =
-                getValue(
-                    match.found,
-                    "name"
-                ).trim();
-
-
-            // Never show blank names
-
-            if (
-                lostName === "" ||
-                foundName === ""
-            ) {
-
-                return;
-
-            }
-
-
-            const notification =
-                document.createElement(
-                    "div"
-                );
-
-
-            notification.className =
-                "match-notification";
-
-
-            notification.innerHTML = `
-
-                🔔 <strong>
-                Possible Match Found!
-                </strong>
-
-                <p>
-                    Lost item:
-                    <strong>${lostName}</strong>
-                </p>
-
-                <p>
-                    Found item:
-                    <strong>${foundName}</strong>
-                </p>
-
-                <p>
-                    These items have similar
-                    details. Please verify ownership.
-                </p>
-
-            `;
-
-
-            notificationArea.appendChild(
-                notification
+        const lostName =
+            getValue(
+                match.lost,
+                "name"
             );
 
-        }
-    );
+        const foundName =
+            getValue(
+                match.found,
+                "name"
+            );
 
+
+        const notification =
+            document.createElement("div");
+
+        notification.className =
+            "notification";
+
+
+        notification.innerHTML = `
+
+            <h3>
+                🔔 Possible Match Found!
+            </h3>
+
+            <p>
+                <strong>Lost item:</strong>
+                ${lostName}
+            </p>
+
+            <p>
+                <strong>Found item:</strong>
+                ${foundName}
+            </p>
+
+            <p>
+                These items have similar details.
+                Please verify ownership.
+            </p>
+
+            <button class="verify-btn">
+                🔐 Verify Ownership
+            </button>
+
+        `;
+
+
+        const verifyButton =
+            notification.querySelector(
+                ".verify-btn"
+            );
+
+
+        verifyButton.addEventListener(
+            "click",
+            () => {
+
+                verifyOwnership(
+                    match,
+                    notification
+                );
+
+            }
+        );
+
+
+        notificationArea.appendChild(
+            notification
+        );
+
+    });
 }
 
 
-// ===============================
-// REPORT ITEM
-// SAVE TO FIRESTORE
-// ===============================
+// Verify ownership
+async function verifyOwnership(
+    match,
+    notification
+) {
 
+    const lostDescription =
+        getValue(
+            match.lost,
+            "description"
+        );
+
+    const lostLocation =
+        getValue(
+            match.lost,
+            "location"
+        );
+
+
+    const enteredDescription =
+        prompt(
+            "Enter the description of your lost item:"
+        );
+
+
+    if (
+        !enteredDescription ||
+        enteredDescription.toLowerCase().trim() !==
+        lostDescription.toLowerCase().trim()
+    ) {
+
+        alert(
+            "❌ Description does not match."
+        );
+
+        return;
+    }
+
+
+    const enteredLocation =
+        prompt(
+            "Enter the location where you lost the item:"
+        );
+
+
+    if (
+        !enteredLocation ||
+        enteredLocation.toLowerCase().trim() !==
+        lostLocation.toLowerCase().trim()
+    ) {
+
+        alert(
+            "❌ Location does not match."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        await updateDoc(
+            doc(
+                db,
+                "items",
+                match.lostId
+            ),
+            {
+                matchStatus: "Verified"
+            }
+        );
+
+
+        await updateDoc(
+            doc(
+                db,
+                "items",
+                match.foundId
+            ),
+            {
+                matchStatus: "Verified"
+            }
+        );
+
+
+        notification.innerHTML = `
+
+            <h3>
+                🔐 Ownership Verified
+            </h3>
+
+            <p>
+                ✅ The ownership details
+                have been verified successfully.
+            </p>
+
+            <button class="return-btn">
+                ✅ Mark as Returned
+            </button>
+
+        `;
+
+
+        const returnButton =
+            notification.querySelector(
+                ".return-btn"
+            );
+
+
+        returnButton.addEventListener(
+            "click",
+            () => {
+
+                markAsReturned(
+                    match,
+                    notification
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Verification update error:",
+            error
+        );
+
+        alert(
+            "Unable to update ownership status."
+        );
+
+    }
+}
+
+
+// Mark item as returned
+async function markAsReturned(
+    match,
+    notification
+) {
+
+    const confirmReturn =
+        confirm(
+            "Are you sure the item has been returned?"
+        );
+
+
+    if (!confirmReturn) {
+
+        return;
+    }
+
+
+    try {
+
+        await updateDoc(
+            doc(
+                db,
+                "items",
+                match.lostId
+            ),
+            {
+                Status: "Resolved",
+                matchStatus: "Returned"
+            }
+        );
+
+
+        await updateDoc(
+            doc(
+                db,
+                "items",
+                match.foundId
+            ),
+            {
+                Status: "Resolved",
+                matchStatus: "Returned"
+            }
+        );
+
+
+        notification.innerHTML = `
+
+            <h3>
+                ✅ Item Returned Successfully
+            </h3>
+
+            <p>
+                The Lost and Found items
+                have been marked as Resolved.
+            </p>
+
+        `;
+
+
+        await loadItems();
+
+
+    } catch (error) {
+
+        console.error(
+            "Return update error:",
+            error
+        );
+
+        alert(
+            "Unable to mark item as returned."
+        );
+
+    }
+}
+
+
+// Submit report form
 reportForm.addEventListener(
     "submit",
-    async function (event) {
+    async (event) => {
 
         event.preventDefault();
 
 
+        const itemType =
+            document.getElementById(
+                "itemType"
+            );
+
+        const itemName =
+            document.getElementById(
+                "itemName"
+            );
+
+        const itemCategory =
+            document.getElementById(
+                "itemCategory"
+            );
+
+        const itemDescription =
+            document.getElementById(
+                "itemDescription"
+            );
+
+        const itemLocation =
+            document.getElementById(
+                "itemLocation"
+            );
+
+        const itemDate =
+            document.getElementById(
+                "itemDate"
+            );
+
+        const itemPhoto =
+            document.getElementById(
+                "itemPhoto"
+            );
+
+        const itemContact =
+            document.getElementById(
+                "itemContact"
+            );
+
+
+        let photoName = "";
+
+
+        if (
+            itemPhoto.files.length > 0
+        ) {
+
+            photoName =
+                itemPhoto.files[0].name;
+
+        }
+
+
         try {
-
-            // Get photo file name only.
-            // Actual image upload to Firebase
-            // Storage is not being used yet.
-
-            const photoName =
-                itemPhoto.files.length > 0
-                    ? itemPhoto.files[0].name
-                    : "";
-
-
-            // Save report to Firestore
 
             await addDoc(
                 collection(db, "items"),
                 {
 
-                    type:
-                        itemType.value,
+                    type: itemType.value,
 
-                    name:
-                        itemName.value,
+                    name: itemName.value,
 
                     category:
                         itemCategory.value,
@@ -911,8 +937,7 @@ reportForm.addEventListener(
                     Contact:
                         itemContact.value,
 
-                    Status:
-                        "Active",
+                    Status: "Active",
 
                     matchStatus:
                         "No Match",
@@ -929,27 +954,21 @@ reportForm.addEventListener(
             );
 
 
-            // Clear form
-
             reportForm.reset();
 
 
-            // Reload Firebase items
-
             await loadItems();
 
-        }
 
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "Error adding item:",
                 error
             );
 
-
             alert(
-                "Unable to report item. Please try again."
+                "Unable to submit report."
             );
 
         }
@@ -958,8 +977,5 @@ reportForm.addEventListener(
 );
 
 
-// ===============================
-// START APPLICATION
-// ===============================
-
+// Load items when page opens
 loadItems();
