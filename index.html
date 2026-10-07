@@ -1,175 +1,660 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>CampusFind - Campus Lost & Found</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =========================================
+           LOGIN PAGE
+        ========================================= */
+
+        #loginPage {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: linear-gradient(
+                135deg,
+                #eef0e2,
+                #dfe4cc,
+                #cdd5b5
+            );
+
+            font-family: Arial, sans-serif;
+        }
+
+        .login-box {
+            width: 400px;
+            padding: 40px;
+
+            background: #fffdf7;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow: 0 15px 40px rgba(75, 82, 50, 0.18);
+        }
+
+        .login-logo {
+            font-size: 50px;
+        }
+
+        .login-box h1 {
+            margin: 10px 0;
+
+            color: #68734f;
+        }
+
+        .login-box h2 {
+            margin-top: 25px;
+
+            color: #4f543d;
+        }
+
+        .login-subtitle {
+            color: #777b69;
+
+            margin-bottom: 25px;
+        }
+
+        .login-box input {
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px;
+
+            margin: 8px 0;
+
+            border: 1px solid #d4d8c3;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            background: #fafaf4;
+
+            color: #4f543d;
+        }
+
+        .login-box input::placeholder {
+            color: #9a9e8c;
+        }
+
+        .login-box input:focus {
+            outline: none;
+
+            border-color: #9ba77a;
+
+            background: #ffffff;
+        }
+
+        .login-box button {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 15px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #7f8962;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #68734f;
+        }
+
+        .switch-text {
+            margin-top: 20px;
+
+            color: #777b69;
+
+            cursor: pointer;
+        }
+
+        .switch-text strong {
+            color: #68734f;
+        }
+
+        .switch-text strong:hover {
+            text-decoration: underline;
+
+            color: #53603f;
+        }
+
+
+        /* =========================================
+           CAMPUSFIND COLOR OVERRIDE
+           PASTEL OLIVE + OFF-WHITE THEME
+        ========================================= */
+
+        #campusWebsite {
+            background: #f7f6ee;
+        }
+
+        #campusWebsite .header {
+            background: #fffdf7;
+        }
+
+        #campusWebsite .logo {
+            color: #68734f;
+        }
+
+        #campusWebsite nav a {
+            color: #596148;
+        }
+
+        #campusWebsite nav a:hover {
+            color: #7f8962;
+        }
+
+        #campusWebsite .hero {
+            background: linear-gradient(
+                135deg,
+                #eef0e2,
+                #dfe4cc
+            );
+        }
+
+        #campusWebsite .hero-tag {
+            color: #7f8962;
+        }
+
+        #campusWebsite .hero h1 {
+            color: #4f543d;
+        }
+
+        #campusWebsite .hero h1 span {
+            color: #7f8962;
+        }
+
+        #campusWebsite .hero p {
+            color: #686d5b;
+        }
+
+        #campusWebsite .btn.primary {
+            background: #7f8962;
+            color: #ffffff;
+        }
+
+        #campusWebsite .btn.primary:hover {
+            background: #68734f;
+        }
+
+        #campusWebsite .btn.secondary {
+            background: #fffdf7;
+            color: #68734f;
+            border-color: #aab291;
+        }
+
+        #campusWebsite .btn.secondary:hover {
+            background: #e8eadb;
+        }
+
+        #campusWebsite .stats {
+            background: #f7f6ee;
+        }
+
+        #campusWebsite .stat-card {
+            background: #fffdf7;
+            border-color: #e0e2d2;
+        }
+
+        #campusWebsite .stat-card h2 {
+            color: #7f8962;
+        }
+
+        #campusWebsite .stat-card p {
+            color: #686d5b;
+        }
+
+        #campusWebsite .board-section {
+            background: #fffdf7;
+        }
+
+        #campusWebsite .section-tag {
+            color: #7f8962;
+        }
+
+        #campusWebsite .section-heading h2 {
+            color: #4f543d;
+        }
+
+        #campusWebsite .section-heading p {
+            color: #686d5b;
+        }
+
+        #campusWebsite .filters input,
+        #campusWebsite .filters select {
+            background: #fafaf4;
+            border-color: #d4d8c3;
+            color: #4f543d;
+        }
+
+        #campusWebsite .filters input:focus,
+        #campusWebsite .filters select:focus {
+            border-color: #9ba77a;
+            outline: none;
+        }
+
+        #campusWebsite .report-section {
+            background: #eef0e2;
+        }
+
+        #campusWebsite .report-form {
+            background: #fffdf7;
+        }
+
+        #campusWebsite .form-group label {
+            color: #596148;
+        }
+
+        #campusWebsite .form-group input,
+        #campusWebsite .form-group select,
+        #campusWebsite .form-group textarea {
+            background: #fafaf4;
+            border-color: #d4d8c3;
+            color: #4f543d;
+        }
+
+        #campusWebsite .form-group input:focus,
+        #campusWebsite .form-group select:focus,
+        #campusWebsite .form-group textarea:focus {
+            border-color: #9ba77a;
+            outline: none;
+        }
+
+        #campusWebsite .features {
+            background: #f7f6ee;
+        }
+
+        #campusWebsite .feature-card {
+            background: #fffdf7;
+            border-color: #e0e2d2;
+        }
+
+        #campusWebsite .feature-card h3 {
+            color: #596148;
+        }
+
+        #campusWebsite .feature-card p {
+            color: #686d5b;
+        }
+
+        #campusWebsite .feature-icon {
+            background: #e3e7d2;
+        }
+
+        #campusWebsite .about-section {
+            background: #dfe4cc;
+        }
+
+        #campusWebsite .about-content h2 {
+            color: #4f543d;
+        }
+
+        #campusWebsite .about-content p {
+            color: #686d5b;
+        }
+
+        #campusWebsite footer {
+            background: #596148;
+            color: #f7f6ee;
+        }
+
+        #campusWebsite footer .footer-logo {
+            color: #f7f6ee;
+        }
+
+        #campusWebsite footer p {
+            color: #dfe4cc;
+        }
+
+        #campusWebsite footer .copyright {
+            color: #cdd5b5;
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">
-            <span>🎓</span>
-            CampusFind
-        </div>
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#board">Lost & Found</a>
-            <a href="#report">Report Item</a>
-            <a href="#about">About</a>
-        </nav>
-    </header>
+    <!-- =====================================================
+         LOGIN PAGE
+    ====================================================== -->
 
+    <div id="loginPage">
 
-    <!-- HERO -->
-    <section id="home" class="hero">
+        <div class="login-box">
 
-        <div class="hero-content">
+            <div class="login-logo">
+                🎓
+            </div>
 
-            <p class="hero-tag">CAMPUS LOST & FOUND</p>
+            <h1>CampusFind</h1>
 
-            <h1>
-                Lost something?<br>
-                <span>Let's find it.</span>
-            </h1>
-
-            <p>
-                CampusFind helps students report, search and recover
-                lost belongings safely and easily.
+            <p class="login-subtitle">
+                Campus Lost & Found Board
             </p>
 
-            <div class="hero-buttons">
-                <a href="#report" class="btn primary">
-                    Report an Item
-                </a>
 
-                <a href="#board" class="btn secondary">
-                    Browse Items
-                </a>
+            <!-- LOGIN FORM -->
+
+            <div id="loginForm">
+
+                <h2>Welcome Back!</h2>
+
+                <p>
+                    Login to continue to CampusFind
+                </p>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Email Address"
+                >
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Password"
+                >
+
+                <button onclick="loginUser()">
+                    Login
+                </button>
+
+                <p
+                    class="switch-text"
+                    onclick="showSignup()"
+                >
+                    New user?
+                    <strong>Create an account</strong>
+                </p>
+
+            </div>
+
+
+            <!-- CREATE ACCOUNT FORM -->
+
+            <div
+                id="signupForm"
+                style="display: none;"
+            >
+
+                <h2>Create Account</h2>
+
+                <p>
+                    Join CampusFind today
+                </p>
+
+                <input
+                    type="text"
+                    id="signupName"
+                    placeholder="Full Name"
+                >
+
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="Email Address"
+                >
+
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="Password"
+                >
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm Password"
+                >
+
+                <button onclick="createAccount()">
+                    Create Account
+                </button>
+
+                <p
+                    class="switch-text"
+                    onclick="showLogin()"
+                >
+                    Already have an account?
+                    <strong>Login</strong>
+                </p>
+
             </div>
 
         </div>
 
-    </section>
+    </div>
 
 
-    <!-- QUICK STATS -->
-    <section class="stats">
 
-        <div class="stat-card">
-            <h2>12</h2>
-            <p>Sample Reports</p>
-        </div>
+    <!-- =====================================================
+         EXISTING CAMPUSFIND WEBSITE
+    ====================================================== -->
 
-        <div class="stat-card">
-            <h2>6</h2>
-            <p>Lost Items</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>6</h2>
-            <p>Found Items</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>3</h2>
-            <p>Possible Matches</p>
-        </div>
-
-    </section>
+    <div
+        id="campusWebsite"
+        style="display: none;"
+    >
 
 
-    <!-- SEARCH & FILTER -->
-    <section id="board" class="board-section">
+        <!-- HEADER -->
 
-        <div class="section-heading">
-            <p class="section-tag">FIND AN ITEM</p>
+        <header class="header">
 
-            <h2>Lost & Found Board</h2>
+            <div class="logo">
 
-            <p>
-                Search and filter reported items to find what you're looking for.
-            </p>
-        </div>
+                <span>🎓</span>
 
+                CampusFind
 
-        <div class="filters">
-
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="🔍 Search item, description or location..."
-            >
-
-            <select id="typeFilter">
-                <option value="All">All Types</option>
-                <option value="Lost">Lost</option>
-                <option value="Found">Found</option>
-            </select>
-
-            <select id="categoryFilter">
-                <option value="All">All Categories</option>
-                <option value="Documents">Documents</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Books">Books</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Stationery">Stationery</option>
-                <option value="Other">Other</option>
-            </select>
-
-            <select id="statusFilter">
-                <option value="All">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Resolved">Resolved</option>
-            </select>
-
-        </div>
+            </div>
 
 
-        <!-- MATCH NOTIFICATIONS -->
-        <div id="notificationArea"></div>
+            <nav>
+
+                <a href="#home">
+                    Home
+                </a>
+
+                <a href="#board">
+                    Lost & Found
+                </a>
+
+                <a href="#report">
+                    Report Item
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
+            </nav>
+
+        </header>
 
 
-        <!-- FIREBASE ITEMS WILL APPEAR HERE -->
-        <div id="itemsContainer" class="items-grid"></div>
+
+        <!-- HERO -->
+
+        <section
+            id="home"
+            class="hero"
+        >
+
+            <div class="hero-content">
+
+                <p class="hero-tag">
+                    CAMPUS LOST & FOUND
+                </p>
+
+                <h1>
+                    Lost something?<br>
+
+                    <span>
+                        Let's find it.
+                    </span>
+
+                </h1>
+
+                <p>
+                    CampusFind helps students report, search and recover
+                    lost belongings safely and easily.
+                </p>
 
 
-        <!-- ITEM DETAILS -->
-        <div id="itemDetails"></div>
+                <div class="hero-buttons">
 
-    </section>
-
-
-    <!-- REPORT ITEM -->
-    <section id="report" class="report-section">
-
-        <div class="section-heading">
-            <p class="section-tag">REPORT</p>
-
-            <h2>Report a Lost or Found Item</h2>
-
-            <p>
-                Help another student recover their belongings.
-            </p>
-        </div>
+                    <a
+                        href="#report"
+                        class="btn primary"
+                    >
+                        Report an Item
+                    </a>
 
 
-        <form id="reportForm" class="report-form">
+                    <a
+                        href="#board"
+                        class="btn secondary"
+                    >
+                        Browse Items
+                    </a>
 
-            <div class="form-group">
+                </div>
 
-                <label for="itemType">Report Type</label>
+            </div>
 
-                <select id="itemType" required>
+        </section>
 
-                    <option value="">
-                        Select Lost or Found
+
+
+        <!-- QUICK STATS -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <h2>
+                    12
+                </h2>
+
+                <p>
+                    Sample Reports
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h2>
+                    6
+                </h2>
+
+                <p>
+                    Lost Items
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h2>
+                    6
+                </h2>
+
+                <p>
+                    Found Items
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h2>
+                    3
+                </h2>
+
+                <p>
+                    Possible Matches
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- SEARCH & FILTER -->
+
+        <section
+            id="board"
+            class="board-section"
+        >
+
+            <div class="section-heading">
+
+                <p class="section-tag">
+                    FIND AN ITEM
+                </p>
+
+                <h2>
+                    Lost & Found Board
+                </h2>
+
+                <p>
+                    Search and filter reported items to find what you're looking for.
+                </p>
+
+            </div>
+
+
+            <div class="filters">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search item, description or location..."
+                >
+
+
+                <select id="typeFilter">
+
+                    <option value="All">
+                        All Types
                     </option>
 
                     <option value="Lost">
@@ -182,31 +667,11 @@
 
                 </select>
 
-            </div>
 
+                <select id="categoryFilter">
 
-            <div class="form-group">
-
-                <label for="itemName">Item Name</label>
-
-                <input
-                    type="text"
-                    id="itemName"
-                    placeholder="Example: Black Water Bottle"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="itemCategory">Category</label>
-
-                <select id="itemCategory" required>
-
-                    <option value="">
-                        Select Category
+                    <option value="All">
+                        All Categories
                     </option>
 
                     <option value="Documents">
@@ -235,190 +700,525 @@
 
                 </select>
 
-            </div>
 
+                <select id="statusFilter">
 
-            <div class="form-group full-width">
+                    <option value="All">
+                        All Status
+                    </option>
 
-                <label for="itemDescription">
-                    Description
-                </label>
+                    <option value="Active">
+                        Active
+                    </option>
 
-                <textarea
-                    id="itemDescription"
-                    placeholder="Describe the item..."
-                    required
-                ></textarea>
+                    <option value="Resolved">
+                        Resolved
+                    </option>
 
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="itemLocation">
-                    Location
-                </label>
-
-                <input
-                    type="text"
-                    id="itemLocation"
-                    placeholder="Example: Library"
-                    required
-                >
+                </select>
 
             </div>
 
 
-            <div class="form-group">
+            <!-- MATCH NOTIFICATIONS -->
 
-                <label for="itemDate">
-                    Date
-                </label>
-
-                <input
-                    type="date"
-                    id="itemDate"
-                    required
-                >
-
-            </div>
+            <div id="notificationArea"></div>
 
 
-            <div class="form-group">
+            <!-- FIREBASE ITEMS -->
 
-                <label for="itemPhoto">
-                    Item Photo
-                </label>
-
-                <input
-                    type="file"
-                    id="itemPhoto"
-                    accept="image/*"
-                >
-
-            </div>
+            <div
+                id="itemsContainer"
+                class="items-grid"
+            ></div>
 
 
-            <div class="form-group">
+            <!-- ITEM DETAILS -->
 
-                <label for="itemContact">
-                    Contact
-                </label>
+            <div id="itemDetails"></div>
 
-                <input
-                    type="text"
-                    id="itemContact"
-                    placeholder="Example: Demo Student"
-                    required
-                >
-
-            </div>
+        </section>
 
 
-            <button type="submit" class="btn primary submit-btn">
-                Submit Report
-            </button>
 
-        </form>
+        <!-- REPORT ITEM -->
 
-    </section>
+        <section
+            id="report"
+            class="report-section"
+        >
 
+            <div class="section-heading">
 
-    <!-- FEATURES -->
-    <section class="features">
-
-        <div class="section-heading">
-
-            <p class="section-tag">HOW IT WORKS</p>
-
-            <h2>Recover Items Easily</h2>
-
-        </div>
-
-
-        <div class="feature-grid">
-
-            <div class="feature-card">
-                <div class="feature-icon">📝</div>
-                <h3>Report</h3>
-                <p>
-                    Report an item you lost or found on campus.
+                <p class="section-tag">
+                    REPORT
                 </p>
-            </div>
 
+                <h2>
+                    Report a Lost or Found Item
+                </h2>
 
-            <div class="feature-card">
-                <div class="feature-icon">🔎</div>
-                <h3>Search</h3>
                 <p>
-                    Search and filter reported items quickly.
+                    Help another student recover their belongings.
                 </p>
+
             </div>
 
 
-            <div class="feature-card">
-                <div class="feature-icon">🔔</div>
-                <h3>Get Matched</h3>
+            <form
+                id="reportForm"
+                class="report-form"
+            >
+
+
+                <div class="form-group">
+
+                    <label for="itemType">
+                        Report Type
+                    </label>
+
+                    <select
+                        id="itemType"
+                        required
+                    >
+
+                        <option value="">
+                            Select Lost or Found
+                        </option>
+
+                        <option value="Lost">
+                            Lost
+                        </option>
+
+                        <option value="Found">
+                            Found
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemName">
+                        Item Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="itemName"
+                        placeholder="Example: Black Water Bottle"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemCategory">
+                        Category
+                    </label>
+
+                    <select
+                        id="itemCategory"
+                        required
+                    >
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option value="Documents">
+                            Documents
+                        </option>
+
+                        <option value="Electronics">
+                            Electronics
+                        </option>
+
+                        <option value="Books">
+                            Books
+                        </option>
+
+                        <option value="Accessories">
+                            Accessories
+                        </option>
+
+                        <option value="Stationery">
+                            Stationery
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group full-width">
+
+                    <label for="itemDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="itemDescription"
+                        placeholder="Describe the item..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemLocation">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="itemLocation"
+                        placeholder="Example: Library"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemDate">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="itemDate"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemPhoto">
+                        Item Photo
+                    </label>
+
+                    <input
+                        type="file"
+                        id="itemPhoto"
+                        accept="image/*"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="itemContact">
+                        Contact
+                    </label>
+
+                    <input
+                        type="text"
+                        id="itemContact"
+                        placeholder="Example: Demo Student"
+                        required
+                    >
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="btn primary submit-btn"
+                >
+                    Submit Report
+                </button>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- FEATURES -->
+
+        <section class="features">
+
+            <div class="section-heading">
+
+                <p class="section-tag">
+                    HOW IT WORKS
+                </p>
+
+                <h2>
+                    Recover Items Easily
+                </h2>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        📝
+                    </div>
+
+                    <h3>
+                        Report
+                    </h3>
+
+                    <p>
+                        Report an item you lost or found on campus.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Search
+                    </h3>
+
+                    <p>
+                        Search and filter reported items quickly.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🔔
+                    </div>
+
+                    <h3>
+                        Get Matched
+                    </h3>
+
+                    <p>
+                        Receive a notification when a possible match is found.
+                    </p>
+
+                </div>
+
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        🤝
+                    </div>
+
+                    <h3>
+                        Recover
+                    </h3>
+
+                    <p>
+                        Verify ownership and safely return the item.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ABOUT -->
+
+        <section
+            id="about"
+            class="about-section"
+        >
+
+            <div class="about-content">
+
+                <p class="section-tag">
+                    ABOUT CAMPUSFIND
+                </p>
+
+                <h2>
+                    A connected campus for lost & found items.
+                </h2>
+
                 <p>
-                    Receive a notification when a possible match is found.
+                    CampusFind provides a simple platform where students
+                    can report lost and found belongings, search existing
+                    reports, receive possible-match notifications and
+                    safely recover their items.
                 </p>
+
             </div>
 
+        </section>
 
-            <div class="feature-card">
-                <div class="feature-icon">🤝</div>
-                <h3>Recover</h3>
-                <p>
-                    Verify ownership and safely return the item.
-                </p>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <div class="footer-logo">
+                🎓 CampusFind
             </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ABOUT -->
-    <section id="about" class="about-section">
-
-        <div class="about-content">
-
-            <p class="section-tag">ABOUT CAMPUSFIND</p>
-
-            <h2>A connected campus for lost & found items.</h2>
 
             <p>
-                CampusFind provides a simple platform where students
-                can report lost and found belongings, search existing
-                reports, receive possible-match notifications and
-                safely recover their items.
+                Campus Lost & Found Board
             </p>
 
-        </div>
+            <p class="copyright">
+                © 2026 CampusFind. Built for the SEE Hackathon.
+            </p>
 
-    </section>
-
-
-    <!-- FOOTER -->
-    <footer>
-
-        <div class="footer-logo">
-            🎓 CampusFind
-        </div>
-
-        <p>
-            Campus Lost & Found Board
-        </p>
-
-        <p class="copyright">
-            © 2026 CampusFind. Built for the SEE Hackathon.
-        </p>
-
-    </footer>
+        </footer>
 
 
-    <!-- JAVASCRIPT -->
-    <script type="module" src="script.js"></script>
+        <!-- EXISTING JAVASCRIPT -->
+
+        <script
+            type="module"
+            src="script.js"
+        ></script>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         LOGIN JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        // LOGIN
+        function loginUser() {
+
+            const email =
+                document.getElementById("loginEmail").value.trim();
+
+            const password =
+                document.getElementById("loginPassword").value.trim();
+
+
+            if (email === "" || password === "") {
+
+                alert("Please enter your email and password.");
+
+                return;
+            }
+
+
+            // Hide login page
+            document.getElementById("loginPage").style.display = "none";
+
+
+            // Show existing CampusFind website
+            document.getElementById("campusWebsite").style.display = "block";
+
+        }
+
+
+
+        // SHOW CREATE ACCOUNT
+        function showSignup() {
+
+            document.getElementById("loginForm").style.display = "none";
+
+            document.getElementById("signupForm").style.display = "block";
+
+        }
+
+
+
+        // SHOW LOGIN
+        function showLogin() {
+
+            document.getElementById("signupForm").style.display = "none";
+
+            document.getElementById("loginForm").style.display = "block";
+
+        }
+
+
+
+        // CREATE ACCOUNT
+        function createAccount() {
+
+            const name =
+                document.getElementById("signupName").value.trim();
+
+            const email =
+                document.getElementById("signupEmail").value.trim();
+
+            const password =
+                document.getElementById("signupPassword").value;
+
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+
+            if (
+                name === "" ||
+                email === "" ||
+                password === "" ||
+                confirmPassword === ""
+            ) {
+
+                alert("Please fill in all fields.");
+
+                return;
+            }
+
+
+            if (password !== confirmPassword) {
+
+                alert("Passwords do not match.");
+
+                return;
+            }
+
+
+            // Hide login page
+            document.getElementById("loginPage").style.display = "none";
+
+
+            // Show existing CampusFind website
+            document.getElementById("campusWebsite").style.display = "block";
+
+        }
+
+    </script>
+
 
 </body>
+
 </html>
